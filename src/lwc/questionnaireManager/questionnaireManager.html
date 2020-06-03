@@ -1,0 +1,133 @@
+<!--
+ - Created by Aleh_Salavei on 5/21/2020.
+ -->
+
+<!-- Questionnaire Manager -->
+<template>
+    <lightning-card icon-name="standard:radio_button" title="Questionnaire Manager" variant="narrow">
+        <div slot="footer" class="slds-text-align_left">
+            <template if:false={isTypeSelected}>
+
+                <template if:true={isVisitsLoaded}>
+                    <lightning-combobox
+                            label="Visit Type"
+                            name="visitType"
+                            onchange={handleChangeVisitType}
+                            options={visitTypes}
+                            placeholder="Select Visit Type"
+                            value={visitType}
+                            required>
+                    </lightning-combobox>
+                </template>
+
+                <lightning-radio-group
+                        name="questionType"
+                        label="Questionnaire Type"
+                        options={questionnaireTypes}
+                        value={questionnaireType}
+                        onchange={handleChangeQuestionnaireType}
+                        type="radio"
+                        required>
+                </lightning-radio-group>
+
+                <template if:true={isPatientQuestionnaire}>
+                    <template if:true={isTherapiesLoaded}>
+                        <lightning-combobox
+                                label="Therapy Type"
+                                name="therapyType"
+                                onchange={handleChangeTherapyType}
+                                options={therapyTypes}
+                                placeholder="Select Therapy Type"
+                                value={therapyType}
+                                required>
+                        </lightning-combobox>
+                    </template>
+                </template>
+
+                <template if:true={isEquipmentQuestionnaire}>
+                    <template if:true={isProductsLoaded}>
+                        <lightning-combobox
+                                label="Product"
+                                name="product"
+                                onchange={handleChangeProduct}
+                                options={products}
+                                placeholder="Select Product"
+                                value={product}
+                                required>
+                        </lightning-combobox>
+                    </template>
+                </template>
+
+                <lightning-card>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-2 slds-text-align_left">
+                            <lightning-button label="Show Existing Questionnaires" onclick={showListOfQuestionnaires}>
+                            </lightning-button>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-text-align_right">
+                            <lightning-button label="Create New Questionnaire" onclick={createNewQuestionnaire}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </lightning-card>
+            </template>
+
+            <template if:true={isTypeSelected}>
+                <template if:false={result}>
+                    <lightning-input label="Questionnaire ApiName" value={questionnaireApiName}
+                                     onchange={handleApiNameChanging} disabled>
+                    </lightning-input>
+
+                    <lightning-input label="Questionnaire Name" value={questionnaireName} onchange={handleNameChanging}
+                                     disabled>
+                    </lightning-input>
+
+                    <div>
+                        <template for:each={questions} for:item="question">
+                            <lightning-card key={question.Id}>
+                                <div class="slds-box slds-box_xx-small slds-theme_shade">
+                                    <lightning-input name={question.Id} label="Question" value={question.Text}
+                                                     onchange={handleTextChanging}>
+                                    </lightning-input>
+
+                                    <lightning-radio-group
+                                            name={question.Id}
+                                            label="Question Type"
+                                            options={questionTypes}
+                                            value={question.Type}
+                                            onchange={handleChangeQuestionType}
+                                            type="radio">
+                                    </lightning-radio-group>
+                                </div>
+                            </lightning-card>
+                        </template>
+                    </div>
+                </template>
+
+                <div class="slds-text-align_center">
+                    <template if:true={result}>
+                        The Questionnaire is {result.state}. Press "Back" to return to start screen.
+                    </template>
+                </div>
+
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-3 slds-text-align_left">
+                        <lightning-button label="Back" onclick={cancelNewQuestionnaire}>
+                        </lightning-button>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                        <lightning-button label="Add Another Question" onclick={addNewQuestion}>
+                        </lightning-button>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-3 slds-text-align_right">
+                        <lightning-button label="Save" onclick={saveNewQuestionnaire}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
